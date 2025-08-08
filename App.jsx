@@ -412,12 +412,12 @@ const GameScreen = ({ journey, onBack }) => {
     const [showConfetti, setShowConfetti] = useState(false);
     const [recycleConfetti, setRecycleConfetti] = useState(true);
     const [showCopyMessage, setShowCopyMessage] = useState(false);
-    const messagesEndRef = useRef(null); // Ref for the bottom of the messages section
+    const scrollTargetRef = useRef(null); 
 
     // Effect to scroll to the bottom when a message or hint appears
     useEffect(() => {
         if (message || hint) {
-            messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
+            scrollTargetRef.current?.scrollIntoView({ behavior: "smooth" });
         }
     }, [message, hint]);
 
@@ -562,9 +562,10 @@ const GameScreen = ({ journey, onBack }) => {
                 <button onClick={onBack} className="btn back-btn">Back to Journeys</button>
             </div>
             
-            {hint && !message && <div className="message-box hint-box">{hint}</div>}
-            {message && <div className={`message-box ${isCompleted ? 'success-msg' : 'error-msg'}`}>{message}</div>}
-            <div ref={messagesEndRef} /> {/* This empty div is the target for scrolling */}
+            <div ref={scrollTargetRef}>
+                {hint && !message && <div className="message-box hint-box">{hint}</div>}
+                {message && <div className={`message-box ${isCompleted ? 'success-msg' : 'error-msg'}`}>{message}</div>}
+            </div>
         </DndProvider>
     );
 };
