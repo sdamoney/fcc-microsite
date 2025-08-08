@@ -90,7 +90,11 @@ const Style = () => (
         .placed-solitaire-card p { display: none; }
 
         .correct-placement { box-shadow: 0 0 15px 5px var(--correct-glow); border-color: var(--correct-glow); }
-        .incorrect-placement { box-shadow: 0 0 15px 5px var(--incorrect-glow); border-color: var(--incorrect-glow); }
+        .incorrect-placement { 
+            box-shadow: 0 0 15px 5px var(--incorrect-glow); 
+            border-color: var(--incorrect-glow);
+            cursor: pointer;
+        }
 
         .journey-path-container {
             position: relative; display: flex; justify-content: center;
@@ -226,10 +230,17 @@ function DeckCard({ card, isPlaced }) {
     );
 }
 
-function PlacedCard({ card, isCorrect }) {
+function PlacedCard({ card, isCorrect, onRemove }) {
     const cardClasses = `solitaire-card placed-solitaire-card ${isCorrect ? 'correct-placement' : 'incorrect-placement'}`;
+    
+    const handleCardClick = () => {
+        if (!isCorrect) {
+            onRemove(card.id);
+        }
+    };
+
     return (
-        <div className={cardClasses}>
+        <div className={cardClasses} onClick={handleCardClick}>
             <div className="card-icon">{card.icon}</div>
             <h3>{card.title}</h3>
             <p>{card.description}</p>
@@ -237,7 +248,7 @@ function PlacedCard({ card, isCorrect }) {
     );
 }
 
-function DroppableSlot({ slotIndex, placedCards, setPlacedCards, journey }) {
+function DroppableSlot({ slotIndex, placedCards, setPlacedCards, journey, onRemoveCard }) {
     const [{ isOver }, dropRef] = useDrop(() => ({
         accept: 'CARD',
         drop: (item) => {
@@ -256,7 +267,7 @@ function DroppableSlot({ slotIndex, placedCards, setPlacedCards, journey }) {
     return (
         <div ref={dropRef} className={`droppable-slot ${isOver ? 'droppable-slot-over' : ''}`}>
             <div className="slot-number">{slotIndex + 1}</div>
-            {cardData ? <PlacedCard card={cardData} isCorrect={isCorrect} /> : <span>Drop card here</span>}
+            {cardData ? <PlacedCard card={cardData} isCorrect={isCorrect} onRemove={onRemoveCard} /> : <span>Drop card here</span>}
         </div>
     );
 }
@@ -320,6 +331,12 @@ const GameScreen = ({ journey, onBack }) => {
         }
     };
 
+    const handleRemoveCard = (cardIdToRemove) => {
+        setPlacedCards(prevPlacedCards => 
+            prevPlacedCards.filter(card => card.cardId !== cardIdToRemove)
+        );
+    };
+
     const handleReset = () => { 
         setPlacedCards([]); 
         setMessage(''); 
@@ -373,7 +390,14 @@ const GameScreen = ({ journey, onBack }) => {
             <div className="journey-path-container">
                 <div className="journey-line"></div>
                 {Array.from({ length: journey.correctSequence.length }).map((_, i) => (
-                    <DroppableSlot key={i} slotIndex={i} placedCards={placedCards} setPlacedCards={setPlacedCards} journey={journey} />
+                    <DroppableSlot 
+                        key={i} 
+                        slotIndex={i} 
+                        placedCards={placedCards} 
+                        setPlacedCards={setPlacedCards} 
+                        journey={journey}
+                        onRemoveCard={handleRemoveCard}
+                    />
                 ))}
             </div>
 
