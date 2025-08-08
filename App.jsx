@@ -52,14 +52,25 @@ const Style = () => (
             --correct-glow: #28a745;
             --incorrect-glow: #dc3545;
         }
+        html {
+            height: 100%;
+        }
         body {
             background: linear-gradient(135deg, #e9f0ff, #ffffff);
             margin: 0;
             font-family: 'Poppins', sans-serif;
             color: #0C0E0D;
+            height: 100%;
+            overflow: hidden; /* Prevent body scrolling */
+        }
+        #root {
+            height: 100%;
         }
         .app-container {
-             padding: 1rem; background-color: #f4f9ff; min-height: 100vh;
+             padding: 1rem; background-color: #f4f9ff; min-height: 100%;
+             height: 100%;
+             overflow-y: auto; /* Make app container the primary scroller */
+             -webkit-overflow-scrolling: touch; /* Smooth scrolling on iOS */
         }
         .header { text-align: center; margin-bottom: 2rem; }
         .header-logo { max-width: 200px; margin-bottom: 1rem; }
@@ -72,6 +83,7 @@ const Style = () => (
             padding: 1rem; width: 240px; box-shadow: 0 4px 8px rgba(0,0,0,0.1);
             cursor: move; transition: all 0.2s ease;
             border: 2px solid var(--blue-2);
+            position: relative; /* For tooltip positioning */
         }
         .solitaire-card:hover { transform: translateY(-6px); box-shadow: 0 8px 16px rgba(0,0,0,0.2); }
         .card-dragging { opacity: 0.4; transform: scale(1.05); }
@@ -94,6 +106,40 @@ const Style = () => (
             box-shadow: 0 0 15px 5px var(--incorrect-glow); 
             border-color: var(--incorrect-glow);
             cursor: pointer;
+        }
+        
+        /* Tooltip Styles */
+        .tooltip {
+            visibility: hidden;
+            width: 160px;
+            background-color: #333;
+            color: #fff;
+            text-align: center;
+            border-radius: 6px;
+            padding: 8px;
+            position: absolute;
+            z-index: 10;
+            bottom: 105%;
+            left: 50%;
+            margin-left: -80px;
+            opacity: 0;
+            transition: opacity 0.3s;
+            font-size: 0.8rem;
+            pointer-events: none;
+        }
+        .tooltip::after {
+            content: "";
+            position: absolute;
+            top: 100%;
+            left: 50%;
+            margin-left: -5px;
+            border-width: 5px;
+            border-style: solid;
+            border-color: #333 transparent transparent transparent;
+        }
+        .incorrect-placement:hover .tooltip {
+            visibility: visible;
+            opacity: 1;
         }
 
         .journey-path-container {
@@ -151,7 +197,6 @@ const Style = () => (
 
         /* --- MOBILE RESPONSIVE STYLES --- */
         @media (max-width: 768px) {
-            .app-container { padding: 1rem; }
             .main-title { font-size: 1.8rem; }
             .sub-title { font-size: 1rem; }
 
@@ -241,6 +286,7 @@ function PlacedCard({ card, isCorrect, onRemove }) {
 
     return (
         <div className={cardClasses} onClick={handleCardClick}>
+            {!isCorrect && <span className="tooltip">Wrong step! Click to remove.</span>}
             <div className="card-icon">{card.icon}</div>
             <h3>{card.title}</h3>
             <p>{card.description}</p>
