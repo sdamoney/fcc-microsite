@@ -562,7 +562,7 @@ const GameScreen = ({ journey, onBack }) => {
                 <button onClick={onBack} className="btn back-btn">Back to Journeys</button>
             </div>
             
-            <div ref={scrollTargetRef}>
+            <div ref={scrollTargetRef} style={{ paddingBottom: '2rem' }}>
                 {hint && !message && <div className="message-box hint-box">{hint}</div>}
                 {message && <div className={`message-box ${isCompleted ? 'success-msg' : 'error-msg'}`}>{message}</div>}
             </div>
