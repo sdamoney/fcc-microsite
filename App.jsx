@@ -344,6 +344,14 @@ const GameScreen = ({ journey, onBack }) => {
     const [message, setMessage] = useState('');
     const [hint, setHint] = useState('');
     const [isCompleted, setIsCompleted] = useState(false);
+    const messagesEndRef = useRef(null); // Ref for the bottom of the messages section
+
+    // Effect to scroll to the bottom when a message or hint appears
+    useEffect(() => {
+        if (message || hint) {
+            messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
+        }
+    }, [message, hint]);
 
     // Shuffle the cards only when the journey changes
     useEffect(() => {
@@ -461,6 +469,7 @@ const GameScreen = ({ journey, onBack }) => {
             
             {hint && !message && <div className="message-box hint-box">{hint}</div>}
             {message && <div className={`message-box ${isCompleted ? 'success-msg' : 'error-msg'}`}>{message}</div>}
+            <div ref={messagesEndRef} /> {/* This empty div is the target for scrolling */}
         </DndProvider>
     );
 };
