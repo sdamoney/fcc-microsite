@@ -2,11 +2,9 @@
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
-    <!-- Use the FCC favicon for branding -->
     <link rel="icon" type="image/x-icon" href="https://www.flipkartcommercecloud.com/favicon.ico" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     
-    <!-- Correctly formatted link to Google Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
@@ -15,8 +13,7 @@
   </head>
   <body>
     <div id="root"></div>
-    <!-- This script should point to your main JavaScript entry file.
-         Check if your file is named index.js, main.js, or main.jsx and adjust if needed. -->
-    <script type="module" src="/src/index.js"></script>
+    <!-- FIX: Changed to a relative path to resolve the build issue on Vercel -->
+    <script type="module" src="./src/index.js"></script>
   </body>
 </html>
