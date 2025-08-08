@@ -171,6 +171,7 @@ const Style = () => (
             color: white; padding: 12px 24px; font-size: 1rem;
             border: none; border-radius: 10px; cursor: pointer;
             font-weight: 600; transition: all 0.2s; flex-grow: 1; max-width: 250px;
+            position: relative;
         }
         .btn:hover { transform: scale(1.05); }
         .submit-btn { background-color: var(--blue-3); box-shadow: 0 4px var(--blue-4); }
@@ -178,6 +179,19 @@ const Style = () => (
         .back-btn { background-color: #6c757d; box-shadow: 0 4px #495057; }
         .hint-btn { background-color: var(--yellow-2); color: #333; box-shadow: 0 4px var(--yellow-1); }
         .linkedin-btn { background-color: #0077b5; box-shadow: 0 4px #005582; }
+        
+        .copy-feedback {
+            position: absolute;
+            bottom: -30px;
+            left: 50%;
+            transform: translateX(-50%);
+            background-color: #28a745;
+            color: white;
+            padding: 4px 12px;
+            border-radius: 4px;
+            font-size: 0.8rem;
+            white-space: nowrap;
+        }
 
         .message-box { margin: 20px auto; padding: 14px 20px; border-radius: 8px; font-weight: 500; text-align: center; font-size: 1rem; max-width: 600px; }
         .success-msg { background-color: #d4edda; color: #155724; border: 1px solid #c3e6cb; }
@@ -344,6 +358,7 @@ const GameScreen = ({ journey, onBack }) => {
     const [message, setMessage] = useState('');
     const [hint, setHint] = useState('');
     const [isCompleted, setIsCompleted] = useState(false);
+    const [showCopyMessage, setShowCopyMessage] = useState(false);
     const messagesEndRef = useRef(null); // Ref for the bottom of the messages section
 
     // Effect to scroll to the bottom when a message or hint appears
@@ -419,10 +434,25 @@ const GameScreen = ({ journey, onBack }) => {
         if (correctCard) { setHint(correctCard.hint); }
     };
 
-    const generateLinkedInShareUrl = () => {
-        const shareUrl = new URL('https://www.linkedin.com/sharing/share-offsite/');
-        shareUrl.searchParams.set('url', 'https://www.flipkartcommercecloud.com');
-        return shareUrl.toString();
+    const handleLinkedInShare = () => {
+        const postText = `I've just completed the "${journey.title}" challenge on the Flipkart Commerce Cloud Solitaire microsite! It's a fun, interactive way to learn about building powerful digital commerce experiences. #FlipkartCommerceCloud #DigitalCommerce #${journey.key}`;
+        
+        // Copy text to clipboard
+        const textArea = document.createElement("textarea");
+        textArea.value = postText;
+        document.body.appendChild(textArea);
+        textArea.select();
+        document.execCommand('copy');
+        document.body.removeChild(textArea);
+
+        // Show feedback to user
+        setShowCopyMessage(true);
+        setTimeout(() => setShowCopyMessage(false), 2000);
+
+        // Open LinkedIn share window
+        const siteUrl = "https://www.flipkartcommercecloud.com/";
+        const linkedInUrl = `https://www.linkedin.com/sharing/share-offsite/?url=${encodeURIComponent(siteUrl)}`;
+        window.open(linkedInUrl, '_blank', 'noopener,noreferrer');
     };
 
     return (
@@ -459,9 +489,10 @@ const GameScreen = ({ journey, onBack }) => {
                 <button onClick={handleSubmit} className="btn submit-btn">Submit Journey</button>
                 {!isCompleted && <button onClick={handleGetHint} className="btn hint-btn">Get a Hint</button>}
                 {isCompleted && (
-                    <a href={generateLinkedInShareUrl()} target="_blank" rel="noopener noreferrer" className="btn linkedin-btn">
+                    <button onClick={handleLinkedInShare} className="btn linkedin-btn">
                         Share on LinkedIn
-                    </a>
+                        {showCopyMessage && <span className="copy-feedback">Copied!</span>}
+                    </button>
                 )}
                 <button onClick={handleReset} className="btn reset-btn">Reset</button>
                 <button onClick={onBack} className="btn back-btn">Back to Journeys</button>
