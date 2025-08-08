@@ -178,19 +178,54 @@ const Style = () => (
         .reset-btn { background: #E91E63; box-shadow: 0 4px #ad1457; }
         .back-btn { background-color: #6c757d; box-shadow: 0 4px #495057; }
         .hint-btn { background-color: var(--yellow-2); color: #333; box-shadow: 0 4px var(--yellow-1); }
-        .linkedin-btn { background-color: #0077b5; box-shadow: 0 4px #005582; }
+        .linkedin-btn { 
+            background-color: #0077b5; box-shadow: 0 4px #005582;
+            display: flex; align-items: center; justify-content: center;
+        }
         
+        @keyframes pulse {
+            0% {
+                transform: scale(1);
+                box-shadow: 0 0 0 0 rgba(255, 255, 255, 0.4);
+            }
+            70% {
+                transform: scale(1.1);
+                box-shadow: 0 0 0 10px rgba(255, 255, 255, 0);
+            }
+            100% {
+                transform: scale(1);
+                box-shadow: 0 0 0 0 rgba(255, 255, 255, 0);
+            }
+        }
+
+        .info-icon {
+            display: inline-flex; align-items: center; justify-content: center;
+            width: 20px; height: 20px; border-radius: 50%;
+            background-color: rgba(255, 255, 255, 0.3); color: white;
+            font-weight: bold; font-style: italic; margin-left: 8px;
+            font-size: 14px; position: relative; cursor: help;
+            animation: pulse 2s infinite;
+        }
+        .info-tooltip {
+            visibility: hidden; width: 220px; background-color: #333;
+            color: #fff; text-align: center; border-radius: 6px;
+            padding: 8px; position: absolute; z-index: 10;
+            bottom: 125%; left: 50%; margin-left: -110px;
+            opacity: 0; transition: opacity 0.3s; font-size: 12px;
+            font-style: normal; pointer-events: none;
+        }
+        .info-tooltip::after {
+            content: ""; position: absolute; top: 100%; left: 50%;
+            margin-left: -5px; border-width: 5px; border-style: solid;
+            border-color: #333 transparent transparent transparent;
+        }
+        .info-icon:hover .info-tooltip { visibility: visible; opacity: 1; }
+
         .copy-feedback {
-            position: absolute;
-            bottom: -30px;
-            left: 50%;
-            transform: translateX(-50%);
-            background-color: #28a745;
-            color: white;
-            padding: 4px 12px;
-            border-radius: 4px;
-            font-size: 0.8rem;
-            white-space: nowrap;
+            position: absolute; bottom: -30px; left: 50%;
+            transform: translateX(-50%); background-color: #28a745;
+            color: white; padding: 4px 12px; border-radius: 4px;
+            font-size: 0.8rem; white-space: nowrap;
         }
 
         .message-box { margin: 20px auto; padding: 14px 20px; border-radius: 8px; font-weight: 500; text-align: center; font-size: 1rem; max-width: 600px; }
@@ -250,8 +285,14 @@ const Style = () => (
 
 // --- Child Components ---
 
-const ConfettiComponent = () => {
+const ConfettiComponent = ({ recycle }) => {
     const canvasRef = useRef(null);
+    const recycleRef = useRef(recycle);
+
+    useEffect(() => {
+        recycleRef.current = recycle;
+    }, [recycle]);
+
     useEffect(() => {
         const canvas = canvasRef.current; if (!canvas) return;
         const ctx = canvas.getContext('2d');
@@ -261,7 +302,17 @@ const ConfettiComponent = () => {
         const colors = ['#2874F0', '#F8D706', '#E91E63', '#4CAF50', '#ffffff'];
         class Particle {
             constructor() { this.x = Math.random() * width; this.y = Math.random() * height - height; this.vx = Math.random() * 4 - 2; this.vy = Math.random() * 3 + 2; this.size = Math.random() * 8 + 4; this.color = colors[Math.floor(Math.random() * colors.length)]; this.angle = Math.random() * Math.PI * 2; this.rotationSpeed = Math.random() * 0.1 - 0.05; }
-            update() { this.x += this.vx; this.y += this.vy; this.angle += this.rotationSpeed; if (this.y > height + this.size) { this.y = -this.size; this.x = Math.random() * width; } }
+            update() {
+                this.x += this.vx;
+                this.y += this.vy;
+                this.angle += this.rotationSpeed;
+                if (this.y > height + this.size) {
+                    if (recycleRef.current) {
+                        this.y = -this.size;
+                        this.x = Math.random() * width;
+                    }
+                }
+            }
             draw() { ctx.save(); ctx.translate(this.x, this.y); ctx.rotate(this.angle); ctx.fillStyle = this.color; ctx.fillRect(-this.size / 2, -this.size / 2, this.size, this.size); ctx.restore(); }
         }
         for (let i = 0; i < 200; i++) particles.push(new Particle());
@@ -358,6 +409,8 @@ const GameScreen = ({ journey, onBack }) => {
     const [message, setMessage] = useState('');
     const [hint, setHint] = useState('');
     const [isCompleted, setIsCompleted] = useState(false);
+    const [showConfetti, setShowConfetti] = useState(false);
+    const [recycleConfetti, setRecycleConfetti] = useState(true);
     const [showCopyMessage, setShowCopyMessage] = useState(false);
     const messagesEndRef = useRef(null); // Ref for the bottom of the messages section
 
@@ -394,6 +447,10 @@ const GameScreen = ({ journey, onBack }) => {
         if (checkCompletion()) {
             setMessage('🎉 Correct sequence! You completed the journey!');
             setIsCompleted(true);
+            setShowConfetti(true);
+            setRecycleConfetti(true);
+            setTimeout(() => setRecycleConfetti(false), 4000); 
+            setTimeout(() => setShowConfetti(false), 8000); 
         } else {
             setMessage('❌ Incorrect sequence. The glowing cards show which steps are right or wrong. Try again!');
             setIsCompleted(false);
@@ -410,7 +467,8 @@ const GameScreen = ({ journey, onBack }) => {
         setPlacedCards([]); 
         setMessage(''); 
         setHint(''); 
-        setIsCompleted(false); 
+        setIsCompleted(false);
+        setShowConfetti(false);
         // Re-shuffle cards on reset for a new game experience
         const shuffleArray = (array) => {
             const newArray = [...array];
@@ -457,7 +515,7 @@ const GameScreen = ({ journey, onBack }) => {
 
     return (
         <DndProvider backend={HTML5Backend}>
-            {isCompleted && <ConfettiComponent />}
+            {showConfetti && <ConfettiComponent recycle={recycleConfetti} />}
             <div className="header">
                 <img src="https://www.flipkartcommercecloud.com/uploads/header-logo-172827965567037467a1c85.png" alt="Flipkart Commerce Cloud Logo" className="header-logo" />
             </div>
@@ -491,6 +549,12 @@ const GameScreen = ({ journey, onBack }) => {
                 {isCompleted && (
                     <button onClick={handleLinkedInShare} className="btn linkedin-btn">
                         Share on LinkedIn
+                        <span className="info-icon">
+                            i
+                            <span className="info-tooltip">
+                                We've copied the post text for you. Just paste it into the LinkedIn window!
+                            </span>
+                        </span>
                         {showCopyMessage && <span className="copy-feedback">Copied!</span>}
                     </button>
                 )}
