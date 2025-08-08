@@ -448,15 +448,15 @@ const GameScreen = ({ journey, onBack }) => {
             </div>
 
             <div className="button-container">
-                <button onClick={onBack} className="btn back-btn">Back to Journeys</button>
                 <button onClick={handleSubmit} className="btn submit-btn">Submit Journey</button>
-                <button onClick={handleReset} className="btn reset-btn">Reset</button>
                 {!isCompleted && <button onClick={handleGetHint} className="btn hint-btn">Get a Hint</button>}
                 {isCompleted && (
                     <a href={generateLinkedInShareUrl()} target="_blank" rel="noopener noreferrer" className="btn linkedin-btn">
                         Share on LinkedIn
                     </a>
                 )}
+                <button onClick={handleReset} className="btn reset-btn">Reset</button>
+                <button onClick={onBack} className="btn back-btn">Back to Journeys</button>
             </div>
             
             {hint && !message && <div className="message-box hint-box">{hint}</div>}
