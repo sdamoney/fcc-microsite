@@ -24,7 +24,7 @@ const JOURNEYS = {
             { id: 5, title: 'Unified Customer View (CRM)', description: 'Recognizes customers and their history across all channels.', icon: '👤', hint: "For a true omnichannel experience, you must recognize your customer everywhere. Which feature provides a single identity?" },
             { id: 6, title: 'Hybrid Cart & BOPIS', description: 'Allows users to Buy Online and Pick Up In-Store seamlessly.', icon: '🛍️', hint: "Now that you know the customer, how do you bridge the gap between their online browsing and your physical stores?" },
             { id: 7, title: 'Intelligent Order Routing', description: 'Fulfills online orders from the nearest physical store for speed.', icon: '🏪', hint: "An online order comes in. How do you leverage your network of physical stores to deliver it faster?" },
-            { id: 8, title: 'Centralized Inventory', description: 'Provides a single view of stock across all warehouses and stores.', icon: '�', hint: "To make this all work, you need a single source of truth for your products. What capability is essential for managing stock across all locations?" }
+            { id: 8, title: 'Centralized Inventory', description: 'Provides a single view of stock across all warehouses and stores.', icon: '📦', hint: "To make this all work, you need a single source of truth for your products. What capability is essential for managing stock across all locations?" }
         ],
         correctSequence: [5, 6, 7, 8]
     },
@@ -59,12 +59,12 @@ const Style = () => (
             color: #0C0E0D;
         }
         .app-container {
-             padding: 2rem; background-color: #f4f9ff; min-height: 100vh;
+             padding: 1rem; background-color: #f4f9ff; min-height: 100vh;
         }
         .header { text-align: center; margin-bottom: 2rem; }
-        .header-logo { max-width: 250px; margin-bottom: 1rem; }
-        .main-title { font-size: 2.5rem; font-weight: 700; color: var(--blue-4); text-align: center; margin-bottom: 1rem; }
-        .sub-title { font-size: 1.2rem; font-weight: 400; color: #555; text-align: center; margin-bottom: 2rem; max-width: 800px; margin-left: auto; margin-right: auto;}
+        .header-logo { max-width: 200px; margin-bottom: 1rem; }
+        .main-title { font-size: 2rem; font-weight: 700; color: var(--blue-4); text-align: center; margin-bottom: 1rem; }
+        .sub-title { font-size: 1.1rem; font-weight: 400; color: #555; text-align: center; margin-bottom: 2rem; max-width: 800px; margin-left: auto; margin-right: auto;}
         .cards-container { display: flex; gap: 1rem; flex-wrap: wrap; margin-bottom: 3rem; justify-content: center; min-height: 180px; }
         
         .solitaire-card {
@@ -81,25 +81,25 @@ const Style = () => (
         .solitaire-card p { font-size: 14px; color: #555; line-height: 1.4; }
 
         .placed-solitaire-card {
-            width: 100%;
-            height: 100%;
-            padding: 0.5rem;
-            cursor: default;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-            text-align: center;
+            width: 100%; height: 100%; padding: 0.5rem; cursor: default;
+            display: flex; flex-direction: column; justify-content: center;
+            align-items: center; text-align: center;
         }
         .placed-solitaire-card .card-icon { font-size: 1.5rem; margin-bottom: 0.25rem; }
         .placed-solitaire-card h3 { font-size: 0.9rem; margin: 4px 0; }
-        .placed-solitaire-card p { display: none; } /* Hide description on small cards */
+        .placed-solitaire-card p { display: none; }
 
         .correct-placement { box-shadow: 0 0 15px 5px var(--correct-glow); border-color: var(--correct-glow); }
         .incorrect-placement { box-shadow: 0 0 15px 5px var(--incorrect-glow); border-color: var(--incorrect-glow); }
 
-        .journey-path-container { position: relative; display: flex; justify-content: center; align-items: center; gap: 2rem; padding: 2rem 0; margin-bottom: 2rem; }
-        .journey-line { position: absolute; top: 50%; left: 10%; right: 10%; height: 4px; background-color: var(--blue-2); z-index: 1; }
+        .journey-path-container {
+            position: relative; display: flex; justify-content: center;
+            align-items: center; gap: 2rem; padding: 2rem 0; margin-bottom: 2rem;
+        }
+        .journey-line {
+            position: absolute; top: 50%; left: 10%; right: 10%;
+            height: 4px; background-color: var(--blue-2); z-index: 1;
+        }
         .droppable-slot {
             height: 160px; width: 200px; border: 3px dashed #ccc;
             border-radius: 12px; background-color: #fff; display: flex;
@@ -108,31 +108,80 @@ const Style = () => (
             color: #aaa; font-style: italic;
             position: relative; z-index: 2; padding: 0.5rem;
         }
-        .slot-number { position: absolute; top: -15px; left: -15px; background-color: var(--blue-3); color: white; border-radius: 50%; width: 30px; height: 30px; display: flex; align-items: center; justify-content: center; font-weight: bold; border: 2px solid white; }
+        .slot-number {
+            position: absolute; top: -15px; left: -15px; background-color: var(--blue-3);
+            color: white; border-radius: 50%; width: 30px; height: 30px;
+            display: flex; align-items: center; justify-content: center;
+            font-weight: bold; border: 2px solid white;
+        }
         .droppable-slot-over { background-color: #e3ecff; border-color: var(--blue-3); }
         
         .button-container { text-align: center; margin-top: 1.5rem; display: flex; justify-content: center; gap: 1rem; flex-wrap: wrap; }
-        .btn { color: white; padding: 12px 28px; font-size: 16px; border: none; border-radius: 10px; cursor: pointer; font-weight: 600; transition: all 0.2s; }
+        .btn {
+            color: white; padding: 12px 24px; font-size: 1rem;
+            border: none; border-radius: 10px; cursor: pointer;
+            font-weight: 600; transition: all 0.2s; flex-grow: 1; max-width: 250px;
+        }
         .btn:hover { transform: scale(1.05); }
         .submit-btn { background-color: var(--blue-3); box-shadow: 0 4px var(--blue-4); }
-        .submit-btn:hover { background-color: var(--blue-4); }
         .reset-btn { background: #E91E63; box-shadow: 0 4px #ad1457; }
-        .reset-btn:hover { background: #c2185b; }
         .back-btn { background-color: #6c757d; box-shadow: 0 4px #495057; }
         .hint-btn { background-color: var(--yellow-2); color: #333; box-shadow: 0 4px var(--yellow-1); }
         .linkedin-btn { background-color: #0077b5; box-shadow: 0 4px #005582; }
 
-        .message-box { margin: 20px auto; padding: 14px 20px; border-radius: 8px; font-weight: 500; text-align: center; font-size: 1.1rem; max-width: 600px; }
+        .message-box { margin: 20px auto; padding: 14px 20px; border-radius: 8px; font-weight: 500; text-align: center; font-size: 1rem; max-width: 600px; }
         .success-msg { background-color: #d4edda; color: #155724; border: 1px solid #c3e6cb; }
         .error-msg { background-color: #f8d7da; color: #721c24; border: 1px solid #f5c6cb; }
-        .hint-box { background-color: #fffbe6; color: #665c00; border-left: 5px solid #ffc107; font-style: italic; }
+        .hint-box { background-color: #fffbe6; color: #665c00; font-style: italic; }
 
         .journey-selection-container { text-align: center; }
-        .journey-options { display: flex; justify-content: center; gap: 2rem; flex-wrap: wrap; }
-        .journey-card { background: var(--white-0); border: 2px solid var(--blue-2); border-radius: 16px; padding: 2rem; width: 280px; cursor: pointer; transition: transform 0.3s ease, box-shadow 0.3s ease; }
+        .journey-options { display: flex; justify-content: center; gap: 1rem; flex-wrap: wrap; }
+        .journey-card {
+            background: var(--white-0); border: 2px solid var(--blue-2); border-radius: 16px;
+            padding: 1.5rem; width: 100%; max-width: 320px; cursor: pointer;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
         .journey-card:hover { transform: translateY(-10px); box-shadow: 0 12px 24px rgba(40, 116, 240, 0.2); }
-        .journey-card h3 { font-size: 1.5rem; color: var(--blue-4); margin-top: 0; }
-        .journey-card p { color: #555; }
+        .journey-card h3 { font-size: 1.25rem; color: var(--blue-4); margin-top: 0; }
+        .journey-card p { color: #555; font-size: 0.9rem; }
+
+        /* --- MOBILE RESPONSIVE STYLES --- */
+        @media (max-width: 768px) {
+            .app-container { padding: 1rem; }
+            .main-title { font-size: 1.8rem; }
+            .sub-title { font-size: 1rem; }
+
+            .journey-path-container {
+                flex-direction: column;
+                gap: 3rem; /* Increased gap for vertical stacking */
+            }
+            .journey-line {
+                /* Change line from horizontal to vertical */
+                top: 5%;
+                bottom: 5%;
+                left: 50%;
+                width: 4px;
+                height: 90%;
+                transform: translateX(-2px);
+            }
+            .droppable-slot {
+                width: 80%;
+                max-width: 280px;
+                height: 180px; /* Taller slots for easier dropping */
+            }
+            .solitaire-card {
+                width: 90%;
+                max-width: 300px;
+            }
+            .button-container {
+                flex-direction: column;
+                align-items: center;
+            }
+            .btn {
+                width: 100%;
+                max-width: 320px; /* Consistent button width */
+            }
+        }
     `}</style>
 );
 
@@ -271,9 +320,9 @@ const GameScreen = ({ journey, onBack }) => {
     };
 
     const generateLinkedInShareUrl = () => {
-        const postText = `I've just completed the "${journey.title}" challenge on the Flipkart Commerce Cloud Solitaire microsite! It's a fun, interactive way to learn about building powerful digital commerce experiences. #FlipkartCommerceCloud #DigitalCommerce #${journey.key}`;
-        const fccUrl = "https://www.flipkartcommercecloud.com";
-        return `https://www.linkedin.com/shareArticle?mini=true&url=${encodeURIComponent(fccUrl)}&title=${encodeURIComponent(`I completed the ${journey.title} journey!`)}&summary=${encodeURIComponent(postText)}`;
+        const shareUrl = new URL('https://www.linkedin.com/sharing/share-offsite/');
+        shareUrl.searchParams.set('url', 'https://www.flipkartcommercecloud.com');
+        return shareUrl.toString();
     };
 
     return (
