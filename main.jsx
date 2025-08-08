@@ -1,9 +1,11 @@
-import React from "react";
-import ReactDOM from "react-dom/client";
-import FCCCardGame from "./FCCCardGame.jsx";
+import React from 'react';
+import ReactDOM from 'react-dom/client';
+// FIX: Path now points to App.jsx in the same root directory
+import App from './App.jsx';
 
-ReactDOM.createRoot(document.getElementById("root")).render(
+const root = ReactDOM.createRoot(document.getElementById('root'));
+root.render(
   <React.StrictMode>
-    <FCCCardGame />
+    <App />
   </React.StrictMode>
 );
