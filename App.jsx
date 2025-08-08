@@ -283,9 +283,23 @@ const JourneySelectionScreen = ({ onSelectJourney }) => (
 
 const GameScreen = ({ journey, onBack }) => {
     const [placedCards, setPlacedCards] = useState([]);
+    const [shuffledCards, setShuffledCards] = useState([]);
     const [message, setMessage] = useState('');
     const [hint, setHint] = useState('');
     const [isCompleted, setIsCompleted] = useState(false);
+
+    // Shuffle the cards only when the journey changes
+    useEffect(() => {
+        const shuffleArray = (array) => {
+            const newArray = [...array];
+            for (let i = newArray.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [newArray[i], newArray[j]] = [newArray[j], newArray[i]];
+            }
+            return newArray;
+        };
+        setShuffledCards(shuffleArray(journey.cards));
+    }, [journey]);
 
     const placedCardIds = useMemo(() => new Set(placedCards.map(p => p.cardId)), [placedCards]);
 
@@ -306,7 +320,22 @@ const GameScreen = ({ journey, onBack }) => {
         }
     };
 
-    const handleReset = () => { setPlacedCards([]); setMessage(''); setHint(''); setIsCompleted(false); };
+    const handleReset = () => { 
+        setPlacedCards([]); 
+        setMessage(''); 
+        setHint(''); 
+        setIsCompleted(false); 
+        // Re-shuffle cards on reset for a new game experience
+        const shuffleArray = (array) => {
+            const newArray = [...array];
+            for (let i = newArray.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [newArray[i], newArray[j]] = [newArray[j], newArray[i]];
+            }
+            return newArray;
+        };
+        setShuffledCards(shuffleArray(journey.cards));
+    };
 
     const handleGetHint = () => {
         const firstEmptySlotIndex = journey.correctSequence.findIndex((_, index) => !placedCards.some(p => p.slotIndex === index));
@@ -335,7 +364,7 @@ const GameScreen = ({ journey, onBack }) => {
             <p className="sub-title">Drag and drop the feature cards from your deck into the correct sequence below to build your optimal commerce journey.</p>
             
             <div className="cards-container">
-                {journey.cards.map((card) => (
+                {shuffledCards.map((card) => (
                     <DeckCard key={card.id} card={card} isPlaced={placedCardIds.has(card.id)} />
                 ))}
             </div>
